@@ -1,19 +1,36 @@
 ﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace Calculator2024
 {
     public partial class FormCalc : Form
     {
-        private char[,] buttons =
+        public struct BtnStruct
         {
-            { '%', '\u0152', 'C', '\u232B'},
-            { '\u215F', '\u00B2', '\u221A', '\u00F7'},
-            { '7', '8', '9', '\u00D7'},
-            { '4', '5', '6', '-'},
-            { '1', '2', '3', '+'},
-            { '\u00B1', '0', ',', '='},
+            public char Content;
+            public Color Color;
+            public BtnStruct(char content, Color color)
+            {
+                this.Content = content;
+                this.Color = color;
+            }
+        }
+
+        static private Color operationBackground = Color.LightGray;
+        static private Color numbersBackground = Color.WhiteSmoke;
+        static private Color equalSignBackground = Color.LightSeaGreen;
+
+        private BtnStruct[,] buttons =
+        {
+            { new BtnStruct('%', operationBackground), new BtnStruct('\u0152', operationBackground), new BtnStruct('C', operationBackground), new BtnStruct('\u232B', operationBackground)},
+            { new BtnStruct('\u215F', operationBackground), new BtnStruct('\u00B2', operationBackground), new BtnStruct('\u221A', operationBackground), new BtnStruct('\u00F7', operationBackground)},
+            { new BtnStruct('7', numbersBackground), new BtnStruct('8', numbersBackground), new BtnStruct('9', numbersBackground), new BtnStruct('\u00D7', operationBackground)},
+            { new BtnStruct('4', numbersBackground), new BtnStruct('5', numbersBackground), new BtnStruct('6', numbersBackground), new BtnStruct('-', operationBackground)},
+            { new BtnStruct('1', numbersBackground), new BtnStruct('2', numbersBackground), new BtnStruct('3', numbersBackground), new BtnStruct('+', operationBackground)},
+            { new BtnStruct('\u00B1', numbersBackground), new BtnStruct('0', numbersBackground), new BtnStruct(',', numbersBackground), new BtnStruct('=', equalSignBackground)},
         };
+
         public FormCalc()
         {
             InitializeComponent();
@@ -39,8 +56,9 @@ namespace Calculator2024
                     myButton.Height = btnHeight;
                     myButton.Top = posY;
                     myButton.Left = posX;
-                    myButton.Font = new System.Drawing.Font("Segoe UI", 16);
-                    myButton.Text = buttons[i,j].ToString();
+                    myButton.Font = new Font("Segoe UI", 16);
+                    myButton.BackColor = buttons[i, j].Color;
+                    myButton.Text = buttons[i,j].Content.ToString();
                     panelBottom.Controls.Add(myButton);
                     posX += btnWidth;
                 }
