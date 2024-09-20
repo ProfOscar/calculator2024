@@ -28,22 +28,62 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.panelTop = new System.Windows.Forms.Panel();
+            this.panelBottom = new System.Windows.Forms.Panel();
+            this.lblResult = new System.Windows.Forms.Label();
+            this.panelTop.SuspendLayout();
             this.SuspendLayout();
+            // 
+            // panelTop
+            // 
+            this.panelTop.Controls.Add(this.lblResult);
+            this.panelTop.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panelTop.Location = new System.Drawing.Point(0, 0);
+            this.panelTop.Name = "panelTop";
+            this.panelTop.Size = new System.Drawing.Size(320, 131);
+            this.panelTop.TabIndex = 0;
+            // 
+            // panelBottom
+            // 
+            this.panelBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panelBottom.Location = new System.Drawing.Point(0, 137);
+            this.panelBottom.Name = "panelBottom";
+            this.panelBottom.Size = new System.Drawing.Size(320, 360);
+            this.panelBottom.TabIndex = 1;
+            // 
+            // lblResult
+            // 
+            this.lblResult.AutoSize = true;
+            this.lblResult.Font = new System.Drawing.Font("Segoe UI Semibold", 36F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblResult.Location = new System.Drawing.Point(262, 46);
+            this.lblResult.Name = "lblResult";
+            this.lblResult.Size = new System.Drawing.Size(55, 65);
+            this.lblResult.TabIndex = 0;
+            this.lblResult.Text = "0";
             // 
             // FormCalc
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(320, 497);
+            this.Controls.Add(this.panelBottom);
+            this.Controls.Add(this.panelTop);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.MaximizeBox = false;
             this.Name = "FormCalc";
             this.Text = "Calcolatrice";
+            this.Load += new System.EventHandler(this.FormCalc_Load);
+            this.panelTop.ResumeLayout(false);
+            this.panelTop.PerformLayout();
             this.ResumeLayout(false);
 
         }
 
         #endregion
+
+        private System.Windows.Forms.Panel panelTop;
+        private System.Windows.Forms.Panel panelBottom;
+        private System.Windows.Forms.Label lblResult;
     }
 }
 
