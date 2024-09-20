@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             this.panelTop = new System.Windows.Forms.Panel();
-            this.panelBottom = new System.Windows.Forms.Panel();
             this.lblResult = new System.Windows.Forms.Label();
+            this.panelBottom = new System.Windows.Forms.Panel();
             this.panelTop.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -43,6 +43,16 @@
             this.panelTop.Size = new System.Drawing.Size(320, 131);
             this.panelTop.TabIndex = 0;
             // 
+            // lblResult
+            // 
+            this.lblResult.Font = new System.Drawing.Font("Segoe UI Semibold", 36F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblResult.Location = new System.Drawing.Point(2, 46);
+            this.lblResult.Name = "lblResult";
+            this.lblResult.Size = new System.Drawing.Size(318, 65);
+            this.lblResult.TabIndex = 0;
+            this.lblResult.Text = "0";
+            this.lblResult.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
             // panelBottom
             // 
             this.panelBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
@@ -50,16 +60,6 @@
             this.panelBottom.Name = "panelBottom";
             this.panelBottom.Size = new System.Drawing.Size(320, 360);
             this.panelBottom.TabIndex = 1;
-            // 
-            // lblResult
-            // 
-            this.lblResult.AutoSize = true;
-            this.lblResult.Font = new System.Drawing.Font("Segoe UI Semibold", 36F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblResult.Location = new System.Drawing.Point(262, 46);
-            this.lblResult.Name = "lblResult";
-            this.lblResult.Size = new System.Drawing.Size(55, 65);
-            this.lblResult.TabIndex = 0;
-            this.lblResult.Text = "0";
             // 
             // FormCalc
             // 
@@ -74,7 +74,6 @@
             this.Text = "Calcolatrice";
             this.Load += new System.EventHandler(this.FormCalc_Load);
             this.panelTop.ResumeLayout(false);
-            this.panelTop.PerformLayout();
             this.ResumeLayout(false);
 
         }
