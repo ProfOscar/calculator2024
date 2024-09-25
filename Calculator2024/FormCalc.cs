@@ -6,32 +6,41 @@ namespace Calculator2024
 {
     public partial class FormCalc : Form
     {
-        static private Color operationBackground = Color.LightGray;
+        static private Color operatorsBackground = Color.LightGray;
         static private Color numbersBackground = Color.WhiteSmoke;
         static private Color equalSignBackground = Color.LightSeaGreen;
+
+        public enum SymbolType
+        {
+            Number,
+            Operator,
+            EqualSign,
+            DecimalPoint,
+            PlusMinusSign,
+            Backspace,
+            Undefined
+        }
 
         public struct BtnStruct
         {
             public char Content;
-            public Color Color;
-            public bool IsNumber;
+            public SymbolType Type;
 
-            public BtnStruct(char content, Color color, bool isNumber = false)
+            public BtnStruct(char content, SymbolType type = SymbolType.Undefined)
             {
                 this.Content = content;
-                this.Color = color;
-                this.IsNumber = isNumber;
+                this.Type = type;
             }
         }
 
         private BtnStruct[,] buttons =
         {
-            { new BtnStruct('%', operationBackground), new BtnStruct('\u0152', operationBackground), new BtnStruct('C', operationBackground), new BtnStruct('\u232B', operationBackground)},
-            { new BtnStruct('\u215F', operationBackground), new BtnStruct('\u00B2', operationBackground), new BtnStruct('\u221A', operationBackground), new BtnStruct('\u00F7', operationBackground)},
-            { new BtnStruct('7', numbersBackground, true), new BtnStruct('8', numbersBackground, true), new BtnStruct('9', numbersBackground, true), new BtnStruct('\u00D7', operationBackground)},
-            { new BtnStruct('4', numbersBackground, true), new BtnStruct('5', numbersBackground, true), new BtnStruct('6', numbersBackground, true), new BtnStruct('-', operationBackground)},
-            { new BtnStruct('1', numbersBackground, true), new BtnStruct('2', numbersBackground, true), new BtnStruct('3', numbersBackground, true), new BtnStruct('+', operationBackground)},
-            { new BtnStruct('\u00B1', numbersBackground), new BtnStruct('0', numbersBackground, true), new BtnStruct(',', numbersBackground), new BtnStruct('=', equalSignBackground)},
+            { new BtnStruct('%'), new BtnStruct('\u0152'), new BtnStruct('C'), new BtnStruct('\u232B', SymbolType.Backspace)},
+            { new BtnStruct('\u215F'), new BtnStruct('\u00B2'), new BtnStruct('\u221A'), new BtnStruct('\u00F7', SymbolType.Operator)},
+            { new BtnStruct('7', SymbolType.Number), new BtnStruct('8', SymbolType.Number), new BtnStruct('9', SymbolType.Number), new BtnStruct('\u00D7', SymbolType.Operator)},
+            { new BtnStruct('4', SymbolType.Number), new BtnStruct('5', SymbolType.Number), new BtnStruct('6', SymbolType.Number), new BtnStruct('-', SymbolType.Operator)},
+            { new BtnStruct('1', SymbolType.Number), new BtnStruct('2', SymbolType.Number), new BtnStruct('3', SymbolType.Number), new BtnStruct('+', SymbolType.Operator)},
+            { new BtnStruct('\u00B1', SymbolType.PlusMinusSign), new BtnStruct('0', SymbolType.Number), new BtnStruct(',', SymbolType.DecimalPoint), new BtnStruct('=', SymbolType.EqualSign)},
         };
 
         public FormCalc()
@@ -60,7 +69,27 @@ namespace Calculator2024
                     myButton.Top = posY;
                     myButton.Left = posX;
                     myButton.Font = new Font("Segoe UI", 16);
-                    myButton.BackColor = buttons[i, j].Color;
+                    switch (buttons[i, j].Type)
+                    {
+                        case SymbolType.Number:
+                            myButton.BackColor = numbersBackground;
+                            break;
+                        case SymbolType.Operator:
+                            myButton.BackColor = operatorsBackground;
+                            break;
+                        case SymbolType.EqualSign:
+                            myButton.BackColor = equalSignBackground;
+                            break;
+                        case SymbolType.DecimalPoint:
+                            myButton.BackColor = numbersBackground;
+                            break;
+                        case SymbolType.PlusMinusSign:
+                            myButton.BackColor = numbersBackground;
+                            break;
+                        default:
+                            myButton.BackColor = operatorsBackground;
+                            break;
+                    }
                     myButton.Text = buttons[i,j].Content.ToString();
                     myButton.Tag = buttons[i, j];
                     myButton.Click += Button_Click;
@@ -75,7 +104,7 @@ namespace Calculator2024
         {
             Button clickedButton = (Button)sender;
             BtnStruct clickedButtonStruct = (BtnStruct)clickedButton.Tag;
-            if (clickedButtonStruct.IsNumber)
+            if (clickedButtonStruct.Type == SymbolType.Number)
             {
                 lblResult.Text += clickedButton.Text;
             }
