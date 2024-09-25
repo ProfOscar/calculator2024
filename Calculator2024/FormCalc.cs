@@ -104,9 +104,38 @@ namespace Calculator2024
         {
             Button clickedButton = (Button)sender;
             BtnStruct clickedButtonStruct = (BtnStruct)clickedButton.Tag;
-            if (clickedButtonStruct.Type == SymbolType.Number)
+            switch (clickedButtonStruct.Type)
             {
-                lblResult.Text += clickedButton.Text;
+                case SymbolType.Number:
+                    if (lblResult.Text == "0") lblResult.Text = "";
+                    // lblResult.Text += clickedButtonStruct.Content.ToString();
+                    lblResult.Text += clickedButton.Text;
+                    break;
+                case SymbolType.Operator:
+                    break;
+                case SymbolType.EqualSign:
+                    break;
+                case SymbolType.DecimalPoint:
+                    if (!lblResult.Text.Contains(","))
+                        lblResult.Text += ",";
+                    break;
+                case SymbolType.PlusMinusSign:
+                    if (lblResult.Text != "0")
+                        if (!lblResult.Text.Contains("-"))
+                            lblResult.Text = "-" + lblResult.Text;
+                        else
+                            lblResult.Text = lblResult.Text.Substring(1);
+                    break;
+                case SymbolType.Backspace:
+                    // cancello sempre l'ultimo carattere della stringa
+                    lblResult.Text = lblResult.Text.Substring(0, lblResult.Text.Length - 1);
+                    if (lblResult.Text == "-0" || lblResult.Text == "-" || lblResult.Text == "")
+                        lblResult.Text = "0";
+                    break;
+                case SymbolType.Undefined:
+                    break;
+                default:
+                    break;
             }
         }
     }
