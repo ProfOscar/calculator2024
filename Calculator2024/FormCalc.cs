@@ -151,6 +151,8 @@ namespace Calculator2024
             // Formattiamo con separatore decimale e separatore delle migliaia
             if (lblResult.Text.Length>0 && lblResult.Text != "-")
             {
+                if (!decimal.TryParse(lblResult.Text, out decimal result))
+                    lblResult.Text = lblResult.Text.Substring(0, lblResult.Text.Length - 1);
                 decimal num = decimal.Parse(lblResult.Text);
                 NumberFormatInfo nfi = new CultureInfo("it-IT", false).NumberFormat;
                 int decimalSeparatorPosition = lblResult.Text.IndexOf(',');
@@ -164,16 +166,11 @@ namespace Calculator2024
             }
 
             // Controlliamo lunghezza per dimensione label
-            if (lblResult.Text.Length > 16) lblResult.Text = lblResult.Text.Substring(0, 16);
-            if (lblResult.Text.Length > 11)
-            {
-                float delta = lblResult.Text.Length - 11;
-                lblResult.Font = new Font("Segoe UI Semibold", 36F - delta * (float)2.8, FontStyle.Bold, GraphicsUnit.Point, ((byte)(0)));
-            }
-            else
-            {
-                lblResult.Font = new Font("Segoe UI Semibold", 36F, FontStyle.Bold, GraphicsUnit.Point, ((byte)(0)));
-            }
+            int textWidth = TextRenderer.MeasureText(lblResult.Text, lblResult.Font).Width;
+            const int lblResultHorizontalMargin = 24; const int lblDefaultFontSize = 36;
+            float newSize = lblResult.Font.Size * (((float)lblResult.Size.Width - lblResultHorizontalMargin) / textWidth);
+            if (newSize > lblDefaultFontSize) newSize = lblDefaultFontSize;
+            lblResult.Font = new Font("Segoe UI Semibold", newSize, FontStyle.Bold, GraphicsUnit.Point, ((byte)(0)));
         }
     }
 }
