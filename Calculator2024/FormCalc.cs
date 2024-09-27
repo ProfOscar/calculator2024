@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Globalization;
 using System.Windows.Forms;
 
 namespace Calculator2024
@@ -147,6 +148,22 @@ namespace Calculator2024
 
         private void lblResult_TextChanged(object sender, EventArgs e)
         {
+            // Formattiamo con separatore decimale e separatore delle migliaia
+            if (lblResult.Text.Length>0 && lblResult.Text != "-")
+            {
+                decimal num = decimal.Parse(lblResult.Text);
+                NumberFormatInfo nfi = new CultureInfo("it-IT", false).NumberFormat;
+                int decimalSeparatorPosition = lblResult.Text.IndexOf(',');
+                nfi.NumberDecimalDigits = 
+                    decimalSeparatorPosition == -1 ?
+                    0 :
+                    lblResult.Text.Length - decimalSeparatorPosition - 1;
+                string stOut = num.ToString("N", nfi);
+                if (decimalSeparatorPosition == lblResult.Text.Length - 1) stOut += ",";
+                lblResult.Text = stOut;
+            }
+
+            // Controlliamo lunghezza per dimensione label
             if (lblResult.Text.Length > 16) lblResult.Text = lblResult.Text.Substring(0, 16);
             if (lblResult.Text.Length > 11)
             {
