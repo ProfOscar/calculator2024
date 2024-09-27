@@ -52,6 +52,7 @@
             this.lblResult.TabIndex = 0;
             this.lblResult.Text = "0";
             this.lblResult.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblResult.TextChanged += new System.EventHandler(this.lblResult_TextChanged);
             // 
             // panelBottom
             // 
