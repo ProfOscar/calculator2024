@@ -57,6 +57,7 @@ namespace Calculator2024
 
         private void FormCalc_Load(object sender, System.EventArgs e)
         {
+            lblOperation.Text = "";
             MakeButtons(buttons.GetLength(0), buttons.GetLength(1));
         }
 
@@ -119,9 +120,16 @@ namespace Calculator2024
                     lblResult.Text += clickedButton.Text;
                     break;
                 case SymbolType.Operator:
-                    ManageOperator(clickedButtonStruct);
+                    if (lastClickedButton.Type == SymbolType.EqualSign || lastClickedButton.Type == SymbolType.Operator)
+                    {
+                        lastOperator = clickedButtonStruct.Content;
+                        lblOperation.Text = result.ToString() + lastOperator;
+                    }
+                    else
+                        ManageOperator(clickedButtonStruct);
                     break;
                 case SymbolType.EqualSign:
+                    ManageOperator(clickedButtonStruct);
                     break;
                 case SymbolType.DecimalPoint:
                     if (!lblResult.Text.Contains(","))
@@ -158,10 +166,11 @@ namespace Calculator2024
             {
                 operand1 = decimal.Parse(lblResult.Text);
                 lastOperator = clickedButtonStruct.Content;
+                lblOperation.Text = operand1.ToString();
             }
             else
             {
-                operand2 = decimal.Parse(lblResult.Text);
+                if (lastClickedButton.Content != '=') operand2 = decimal.Parse(lblResult.Text);
                 switch (lastOperator)
                 {
                     case '+':
@@ -178,10 +187,14 @@ namespace Calculator2024
                         break;
                     default : break;
                 }
+                lblOperation.Text = clickedButtonStruct.Type == SymbolType.EqualSign ? operand1.ToString() : result.ToString();
                 operand1 = result;
-                lastOperator = clickedButtonStruct.Content;
+                if (clickedButtonStruct.Content != '=') lastOperator = clickedButtonStruct.Content;
                 lblResult.Text = result.ToString();
             }
+            lblOperation.Text += lastOperator.ToString();
+            if (clickedButtonStruct.Type == SymbolType.EqualSign)
+                lblOperation.Text += operand2 + "=";
         }
 
         private void lblResult_TextChanged(object sender, EventArgs e)

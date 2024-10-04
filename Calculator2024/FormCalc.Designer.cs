@@ -31,11 +31,13 @@
             this.panelTop = new System.Windows.Forms.Panel();
             this.lblResult = new System.Windows.Forms.Label();
             this.panelBottom = new System.Windows.Forms.Panel();
+            this.lblOperation = new System.Windows.Forms.Label();
             this.panelTop.SuspendLayout();
             this.SuspendLayout();
             // 
             // panelTop
             // 
+            this.panelTop.Controls.Add(this.lblOperation);
             this.panelTop.Controls.Add(this.lblResult);
             this.panelTop.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelTop.Location = new System.Drawing.Point(0, 0);
@@ -62,6 +64,16 @@
             this.panelBottom.Size = new System.Drawing.Size(320, 360);
             this.panelBottom.TabIndex = 1;
             // 
+            // lblOperation
+            // 
+            this.lblOperation.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblOperation.Location = new System.Drawing.Point(0, 9);
+            this.lblOperation.Name = "lblOperation";
+            this.lblOperation.Size = new System.Drawing.Size(319, 23);
+            this.lblOperation.TabIndex = 1;
+            this.lblOperation.Text = "(lblOperation)";
+            this.lblOperation.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
             // FormCalc
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -84,6 +96,7 @@
         private System.Windows.Forms.Panel panelTop;
         private System.Windows.Forms.Panel panelBottom;
         private System.Windows.Forms.Label lblResult;
+        private System.Windows.Forms.Label lblOperation;
     }
 }
 
