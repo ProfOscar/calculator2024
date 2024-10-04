@@ -143,10 +143,12 @@ namespace Calculator2024
                             lblResult.Text = lblResult.Text.Substring(1);
                     break;
                 case SymbolType.Backspace:
-                    // cancello sempre l'ultimo carattere della stringa
-                    lblResult.Text = lblResult.Text.Substring(0, lblResult.Text.Length - 1);
-                    if (lblResult.Text == "-0" || lblResult.Text == "-" || lblResult.Text == "")
-                        lblResult.Text = "0";
+                    if (lastClickedButton.Type != SymbolType.EqualSign && lastClickedButton.Type != SymbolType.Operator)
+                    {
+                        lblResult.Text = lblResult.Text.Substring(0, lblResult.Text.Length - 1);
+                        if (lblResult.Text == "-0" || lblResult.Text == "-" || lblResult.Text == "")
+                            lblResult.Text = "0";
+                    }
                     break;
                 case SymbolType.ClearAll:
                 case SymbolType.ClearEntry:
@@ -157,7 +159,8 @@ namespace Calculator2024
                 default:
                     break;
             }
-            lastClickedButton = clickedButtonStruct;
+            if(clickedButtonStruct.Type!=SymbolType.Backspace)
+                lastClickedButton = clickedButtonStruct;
         }
 
         private void ManageOperator(BtnStruct clickedButtonStruct)
