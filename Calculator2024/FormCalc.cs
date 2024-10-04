@@ -46,6 +46,10 @@ namespace Calculator2024
             { new BtnStruct('\u00B1', SymbolType.PlusMinusSign), new BtnStruct('0', SymbolType.Number), new BtnStruct(',', SymbolType.DecimalPoint), new BtnStruct('=', SymbolType.EqualSign)},
         };
 
+        char lastOperator = ' ';
+        decimal operand1, operand2, result;
+        BtnStruct lastClickedButton;
+
         public FormCalc()
         {
             InitializeComponent();
@@ -110,11 +114,12 @@ namespace Calculator2024
             switch (clickedButtonStruct.Type)
             {
                 case SymbolType.Number:
-                    if (lblResult.Text == "0") lblResult.Text = "";
+                    if (lblResult.Text == "0" || lastClickedButton.Type== SymbolType.Operator) lblResult.Text = "";
                     // lblResult.Text += clickedButtonStruct.Content.ToString();
                     lblResult.Text += clickedButton.Text;
                     break;
                 case SymbolType.Operator:
+                    ManageOperator(clickedButtonStruct);
                     break;
                 case SymbolType.EqualSign:
                     break;
@@ -143,6 +148,39 @@ namespace Calculator2024
                     break;
                 default:
                     break;
+            }
+            lastClickedButton = clickedButtonStruct;
+        }
+
+        private void ManageOperator(BtnStruct clickedButtonStruct)
+        {
+            if (lastOperator == ' ')
+            {
+                operand1 = decimal.Parse(lblResult.Text);
+                lastOperator = clickedButtonStruct.Content;
+            }
+            else
+            {
+                operand2 = decimal.Parse(lblResult.Text);
+                switch (lastOperator)
+                {
+                    case '+':
+                        result = operand1 + operand2;
+                        break;
+                    case '-':
+                        result = operand1 - operand2;
+                        break;
+                    case '\u00D7':
+                        result = operand1 * operand2;
+                        break;
+                    case '\u00F7':
+                        result = operand1 / operand2;
+                        break;
+                    default : break;
+                }
+                operand1 = result;
+                lastOperator = clickedButtonStruct.Content;
+                lblResult.Text = result.ToString();
             }
         }
 
