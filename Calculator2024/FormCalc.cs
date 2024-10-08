@@ -141,6 +141,12 @@ namespace Calculator2024
                             lblResult.Text = "-" + lblResult.Text;
                         else
                             lblResult.Text = lblResult.Text.Substring(1);
+                    if (lastClickedButton.Type == SymbolType.Operator || lastClickedButton.Type == SymbolType.EqualSign)
+                    {
+                        operand1 = -operand1;
+                        lastOperator = ' ';
+                        lastClickedButton = default;
+                    }
                     break;
                 case SymbolType.Backspace:
                     if (lastClickedButton.Type != SymbolType.EqualSign && lastClickedButton.Type != SymbolType.Operator)
@@ -151,6 +157,14 @@ namespace Calculator2024
                     }
                     break;
                 case SymbolType.ClearAll:
+                    operand1 = 0;
+                    operand2 = 0;
+                    result = 0;
+                    lastOperator = ' ';
+                    lastClickedButton = default;
+                    lblOperation.Text = "";
+                    lblResult.Text = "0";
+                    break;
                 case SymbolType.ClearEntry:
                     lblResult.Text = "0";
                     break;
@@ -159,7 +173,7 @@ namespace Calculator2024
                 default:
                     break;
             }
-            if(clickedButtonStruct.Type!=SymbolType.Backspace)
+            if(clickedButtonStruct.Type != SymbolType.Backspace)
                 lastClickedButton = clickedButtonStruct;
         }
 
@@ -193,7 +207,7 @@ namespace Calculator2024
                 lblOperation.Text = clickedButtonStruct.Type == SymbolType.EqualSign ? operand1.ToString() : result.ToString();
                 operand1 = result;
                 if (clickedButtonStruct.Content != '=') lastOperator = clickedButtonStruct.Content;
-                lblResult.Text = result.ToString();
+                lblResult.Text = result.ToString("G29");
             }
             lblOperation.Text += lastOperator.ToString();
             if (clickedButtonStruct.Type == SymbolType.EqualSign)
