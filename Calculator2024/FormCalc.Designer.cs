@@ -28,10 +28,12 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.panelTop = new System.Windows.Forms.Panel();
+            this.lblOperation = new System.Windows.Forms.Label();
             this.lblResult = new System.Windows.Forms.Label();
             this.panelBottom = new System.Windows.Forms.Panel();
-            this.lblOperation = new System.Windows.Forms.Label();
+            this.labelTimer = new System.Windows.Forms.Timer(this.components);
             this.panelTop.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -44,6 +46,16 @@
             this.panelTop.Name = "panelTop";
             this.panelTop.Size = new System.Drawing.Size(320, 131);
             this.panelTop.TabIndex = 0;
+            // 
+            // lblOperation
+            // 
+            this.lblOperation.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblOperation.Location = new System.Drawing.Point(0, 9);
+            this.lblOperation.Name = "lblOperation";
+            this.lblOperation.Size = new System.Drawing.Size(319, 23);
+            this.lblOperation.TabIndex = 1;
+            this.lblOperation.Text = "(lblOperation)";
+            this.lblOperation.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lblResult
             // 
@@ -64,15 +76,9 @@
             this.panelBottom.Size = new System.Drawing.Size(320, 360);
             this.panelBottom.TabIndex = 1;
             // 
-            // lblOperation
+            // labelTimer
             // 
-            this.lblOperation.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblOperation.Location = new System.Drawing.Point(0, 9);
-            this.lblOperation.Name = "lblOperation";
-            this.lblOperation.Size = new System.Drawing.Size(319, 23);
-            this.lblOperation.TabIndex = 1;
-            this.lblOperation.Text = "(lblOperation)";
-            this.lblOperation.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.labelTimer.Tick += new System.EventHandler(this.labelTimer_Tick);
             // 
             // FormCalc
             // 
@@ -97,6 +103,7 @@
         private System.Windows.Forms.Panel panelBottom;
         private System.Windows.Forms.Label lblResult;
         private System.Windows.Forms.Label lblOperation;
+        private System.Windows.Forms.Timer labelTimer;
     }
 }
 

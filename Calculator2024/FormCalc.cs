@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Globalization;
+using System.Reflection.Emit;
 using System.Windows.Forms;
 
 namespace Calculator2024
@@ -15,6 +16,7 @@ namespace Calculator2024
         {
             Number,
             Operator,
+            SpecialOperator,
             EqualSign,
             DecimalPoint,
             PlusMinusSign,
@@ -39,7 +41,7 @@ namespace Calculator2024
         private BtnStruct[,] buttons =
         {
             { new BtnStruct('%'), new BtnStruct('\u0152', SymbolType.ClearEntry), new BtnStruct('C', SymbolType.ClearAll), new BtnStruct('\u232B', SymbolType.Backspace)},
-            { new BtnStruct('\u215F'), new BtnStruct('\u00B2'), new BtnStruct('\u221A'), new BtnStruct('\u00F7', SymbolType.Operator)},
+            { new BtnStruct('\u215F', SymbolType.SpecialOperator), new BtnStruct('\u00B2'), new BtnStruct('\u221A'), new BtnStruct('\u00F7', SymbolType.Operator)},
             { new BtnStruct('7', SymbolType.Number), new BtnStruct('8', SymbolType.Number), new BtnStruct('9', SymbolType.Number), new BtnStruct('\u00D7', SymbolType.Operator)},
             { new BtnStruct('4', SymbolType.Number), new BtnStruct('5', SymbolType.Number), new BtnStruct('6', SymbolType.Number), new BtnStruct('-', SymbolType.Operator)},
             { new BtnStruct('1', SymbolType.Number), new BtnStruct('2', SymbolType.Number), new BtnStruct('3', SymbolType.Number), new BtnStruct('+', SymbolType.Operator)},
@@ -98,7 +100,7 @@ namespace Calculator2024
                             myButton.BackColor = operatorsBackground;
                             break;
                     }
-                    myButton.Text = buttons[i,j].Content.ToString();
+                    myButton.Text = buttons[i, j].Content.ToString();
                     myButton.Tag = buttons[i, j];
                     myButton.Click += Button_Click;
                     panelBottom.Controls.Add(myButton);
@@ -115,7 +117,7 @@ namespace Calculator2024
             switch (clickedButtonStruct.Type)
             {
                 case SymbolType.Number:
-                    if (lblResult.Text == "0" || lastClickedButton.Type== SymbolType.Operator) lblResult.Text = "";
+                    if (lblResult.Text == "0" || lastClickedButton.Type == SymbolType.Operator) lblResult.Text = "";
                     // lblResult.Text += clickedButtonStruct.Content.ToString();
                     lblResult.Text += clickedButton.Text;
                     break;
@@ -127,6 +129,9 @@ namespace Calculator2024
                     }
                     else
                         ManageOperator(clickedButtonStruct);
+                    break;
+                case SymbolType.SpecialOperator:
+                    ManageSpecialOperator(clickedButtonStruct);
                     break;
                 case SymbolType.EqualSign:
                     ManageOperator(clickedButtonStruct);
@@ -173,8 +178,56 @@ namespace Calculator2024
                 default:
                     break;
             }
-            if(clickedButtonStruct.Type != SymbolType.Backspace)
+            if (clickedButtonStruct.Type != SymbolType.Backspace)
                 lastClickedButton = clickedButtonStruct;
+        }
+
+        private void ManageSpecialOperator(BtnStruct clickedButtonStruct)
+        {
+            lblOperation.Text = lastOperator == ' ' ? "" : operand1.ToString();
+            decimal operand2Temp = decimal.Parse(lblResult.Text);
+            switch (clickedButtonStruct.Content)
+            {
+                case '\u215F':
+                    if (operand2Temp == 0)
+                    {
+                        lblResult.Text = "Impossibile dividere per 0";
+                        ShowBlinkingLabel("Impossibile dividere per 0");
+                        return;
+                    }
+                    else
+                    {
+                        operand2 = operand2Temp;
+                        lblOperation.Text += $"{lastOperator}1/({operand2})";
+                        operand2 = 1 / operand2;
+                    }
+                    break;
+                case '\u00B2':
+                    break;
+                case '\u221A':
+                    break;
+                default:
+                    break;
+            }
+            lblResult.Text = operand2.ToString();
+        }
+
+        int blinkCount;
+        private void ShowBlinkingLabel(string v)
+        {
+            blinkCount = 0;
+            labelTimer.Start();
+        }
+
+        private void labelTimer_Tick(object sender, EventArgs e)
+        {
+            lblResult.Visible = !lblResult.Visible;
+            blinkCount++;
+            if (blinkCount == 10)
+            {
+                labelTimer.Stop();
+                lblResult.Visible = true;
+            }
         }
 
         private void ManageOperator(BtnStruct clickedButtonStruct)
@@ -202,7 +255,7 @@ namespace Calculator2024
                     case '\u00F7':
                         result = operand1 / operand2;
                         break;
-                    default : break;
+                    default: break;
                 }
                 lblOperation.Text = clickedButtonStruct.Type == SymbolType.EqualSign ? operand1.ToString() : result.ToString();
                 operand1 = result;
@@ -217,14 +270,14 @@ namespace Calculator2024
         private void lblResult_TextChanged(object sender, EventArgs e)
         {
             // Formattiamo con separatore decimale e separatore delle migliaia
-            if (lblResult.Text.Length>0 && lblResult.Text != "-")
+            if (lblResult.Text.Length > 0 && lblResult.Text != "-")
             {
                 if (!decimal.TryParse(lblResult.Text, out decimal result))
                     lblResult.Text = lblResult.Text.Substring(0, lblResult.Text.Length - 1);
                 decimal num = decimal.Parse(lblResult.Text);
                 NumberFormatInfo nfi = new CultureInfo("it-IT", false).NumberFormat;
                 int decimalSeparatorPosition = lblResult.Text.IndexOf(',');
-                nfi.NumberDecimalDigits = 
+                nfi.NumberDecimalDigits =
                     decimalSeparatorPosition == -1 ?
                     0 :
                     lblResult.Text.Length - decimalSeparatorPosition - 1;
