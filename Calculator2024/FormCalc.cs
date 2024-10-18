@@ -41,7 +41,7 @@ namespace Calculator2024
         private BtnStruct[,] buttons =
         {
             { new BtnStruct('%'), new BtnStruct('\u0152', SymbolType.ClearEntry), new BtnStruct('C', SymbolType.ClearAll), new BtnStruct('\u232B', SymbolType.Backspace)},
-            { new BtnStruct('\u215F', SymbolType.SpecialOperator), new BtnStruct('\u00B2'), new BtnStruct('\u221A'), new BtnStruct('\u00F7', SymbolType.Operator)},
+            { new BtnStruct('\u215F', SymbolType.SpecialOperator), new BtnStruct('\u00B2', SymbolType.SpecialOperator), new BtnStruct('\u221A', SymbolType.SpecialOperator), new BtnStruct('\u00F7', SymbolType.Operator)},
             { new BtnStruct('7', SymbolType.Number), new BtnStruct('8', SymbolType.Number), new BtnStruct('9', SymbolType.Number), new BtnStruct('\u00D7', SymbolType.Operator)},
             { new BtnStruct('4', SymbolType.Number), new BtnStruct('5', SymbolType.Number), new BtnStruct('6', SymbolType.Number), new BtnStruct('-', SymbolType.Operator)},
             { new BtnStruct('1', SymbolType.Number), new BtnStruct('2', SymbolType.Number), new BtnStruct('3', SymbolType.Number), new BtnStruct('+', SymbolType.Operator)},
@@ -124,8 +124,9 @@ namespace Calculator2024
                 case SymbolType.Operator:
                     if (lastClickedButton.Type == SymbolType.EqualSign || lastClickedButton.Type == SymbolType.Operator)
                     {
+                        lblOperation.Text = lastOperator == ' ' ? operand1.ToString("G29") : result.ToString("G29");
                         lastOperator = clickedButtonStruct.Content;
-                        lblOperation.Text = result.ToString() + lastOperator;
+                        lblOperation.Text += lastOperator;
                     }
                     else
                         ManageOperator(clickedButtonStruct);
@@ -154,7 +155,9 @@ namespace Calculator2024
                     }
                     break;
                 case SymbolType.Backspace:
-                    if (lastClickedButton.Type != SymbolType.EqualSign && lastClickedButton.Type != SymbolType.Operator)
+                    if (lastClickedButton.Type != SymbolType.EqualSign &&
+                        lastClickedButton.Type != SymbolType.Operator &&
+                        lastClickedButton.Type != SymbolType.SpecialOperator)
                     {
                         lblResult.Text = lblResult.Text.Substring(0, lblResult.Text.Length - 1);
                         if (lblResult.Text == "-0" || lblResult.Text == "-" || lblResult.Text == "")
@@ -178,55 +181,71 @@ namespace Calculator2024
                 default:
                     break;
             }
-            if (clickedButtonStruct.Type != SymbolType.Backspace)
+            if (clickedButtonStruct.Type != SymbolType.Backspace && clickedButtonStruct.Type != SymbolType.PlusMinusSign)
                 lastClickedButton = clickedButtonStruct;
         }
 
         private void ManageSpecialOperator(BtnStruct clickedButtonStruct)
         {
-            lblOperation.Text = lastOperator == ' ' ? "" : operand1.ToString();
+            lblOperation.Text = (lastOperator == ' ' || lastClickedButton.Type == SymbolType.EqualSign) ? "" : operand1.ToString("G29");
+            string lastOperatorToWrite = (lastOperator == ' ' || lastClickedButton.Type == SymbolType.EqualSign) ? "" : lastOperator.ToString();
             decimal operand2Temp = decimal.Parse(lblResult.Text);
             switch (clickedButtonStruct.Content)
             {
-                case '\u215F':
+                case '\u215F':  // 1 / x
                     if (operand2Temp == 0)
                     {
-                        lblResult.Text = "Impossibile dividere per 0";
                         ShowBlinkingLabel("Impossibile dividere per 0");
                         return;
                     }
                     else
                     {
                         operand2 = operand2Temp;
-                        lblOperation.Text += $"{lastOperator}1/({operand2})";
+                        lblOperation.Text += $"{lastOperatorToWrite}1/({operand2})";
                         operand2 = 1 / operand2;
                     }
                     break;
-                case '\u00B2':
+                case '\u00B2':  // x al quadrato
+                    operand2 = operand2Temp;
+                    lblOperation.Text += $"{lastOperatorToWrite}sqr({operand2})";
+                    operand2 = (decimal)Math.Pow((double)operand2, 2);
                     break;
-                case '\u221A':
+                case '\u221A':  // radice di x
+                    if (operand2Temp < 0)
+                    {
+                        ShowBlinkingLabel("Input non valido");
+                        return;
+                    }
+                    else
+                    {
+                        operand2 = operand2Temp;
+                        lblOperation.Text += $"{lastOperatorToWrite}\u221A({operand2})";
+                        operand2 = (decimal)Math.Sqrt((double)operand2); ;
+                    }
                     break;
                 default:
                     break;
             }
-            lblResult.Text = operand2.ToString();
+            lblResult.Text = operand2.ToString("G29");
         }
 
         int blinkCount;
-        private void ShowBlinkingLabel(string v)
+        private void ShowBlinkingLabel(string message)
         {
+            lblOperation.Text = message;
             blinkCount = 0;
             labelTimer.Start();
         }
 
         private void labelTimer_Tick(object sender, EventArgs e)
         {
-            lblResult.Visible = !lblResult.Visible;
+            lblOperation.Visible = !lblOperation.Visible;
             blinkCount++;
-            if (blinkCount == 10)
+            if (blinkCount > 6)
             {
                 labelTimer.Stop();
-                lblResult.Visible = true;
+                lblOperation.Visible = true;
+                lblOperation.Text = "";
             }
         }
 
@@ -235,8 +254,8 @@ namespace Calculator2024
             if (lastOperator == ' ')
             {
                 operand1 = decimal.Parse(lblResult.Text);
-                lastOperator = clickedButtonStruct.Content;
-                lblOperation.Text = operand1.ToString();
+                if (clickedButtonStruct.Type != SymbolType.EqualSign) lastOperator = clickedButtonStruct.Content;
+                lblOperation.Text = operand1.ToString("G29");
             }
             else
             {
@@ -257,14 +276,14 @@ namespace Calculator2024
                         break;
                     default: break;
                 }
-                lblOperation.Text = clickedButtonStruct.Type == SymbolType.EqualSign ? operand1.ToString() : result.ToString();
+                lblOperation.Text = clickedButtonStruct.Type == SymbolType.EqualSign ? operand1.ToString("G29") : result.ToString("G29");
                 operand1 = result;
                 if (clickedButtonStruct.Content != '=') lastOperator = clickedButtonStruct.Content;
                 lblResult.Text = result.ToString("G29");
             }
             lblOperation.Text += lastOperator.ToString();
-            if (clickedButtonStruct.Type == SymbolType.EqualSign)
-                lblOperation.Text += operand2 + "=";
+            if (clickedButtonStruct.Type == SymbolType.EqualSign && lastOperator != ' ')
+                lblOperation.Text += operand2.ToString("G29") + "=";
         }
 
         private void lblResult_TextChanged(object sender, EventArgs e)

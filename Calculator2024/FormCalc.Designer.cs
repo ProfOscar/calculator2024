@@ -78,6 +78,7 @@
             // 
             // labelTimer
             // 
+            this.labelTimer.Interval = 500;
             this.labelTimer.Tick += new System.EventHandler(this.labelTimer_Tick);
             // 
             // FormCalc
